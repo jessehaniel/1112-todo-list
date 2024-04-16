@@ -3,6 +3,9 @@ package tech.ada.java.todolist.item;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import tech.ada.java.todolist.NaoEncontradoException;
 
 public class TodoItemController {
 
@@ -35,5 +38,52 @@ public class TodoItemController {
         return this.todoItemList;
     }
 
+    public List<TodoItem> consultarPorTitulo(String titulo) {
+        return this.todoItemList.stream()
+            .filter(it -> it.getTitulo().toLowerCase().contains(titulo.toLowerCase()))
+            .toList();
+    }
+
+    public TodoItem buscarPorUuid(UUID uuid) {
+        return buscarPorUuidOptional(uuid)
+            .orElseThrow(NaoEncontradoException::new);
+    }
+
+    private Optional<TodoItem> buscarPorUuidOptional(UUID uuid) {
+        return this.todoItemList.stream()
+            .filter(it -> it.getUuid().equals(uuid))
+            .findFirst();
+    }
+
+    public void adicionar(TodoItem item) {
+        this.todoItemList.add(item);
+    }
+
+    public void atualizar(UUID uuid, TodoItem itemAtualizado) {
+        int index = this.buscarIndicePorUuid(uuid);
+        if (index == -1) {
+            throw new NaoEncontradoException();
+        }
+        this.todoItemList.set(index, itemAtualizado);
+    }
+
+    private int buscarIndicePorUuid(UUID uuid) {
+        for (int i = 0; i < this.todoItemList.size(); i++) {
+            if (this.todoItemList.get(i).getUuid().equals(uuid)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void marcarComoConcluido(UUID uuid) {
+        TodoItem item = buscarPorUuid(uuid);
+        item.setConcluido(true);
+    }
+
+    public void excluir(UUID uuid) {
+        TodoItem item = buscarPorUuid(uuid);
+        this.todoItemList.remove(item);
+    }
 
 }

@@ -1,16 +1,15 @@
 package tech.ada.java.todolist.item;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 public final class TodoItem {
 
-    private final String titulo;
-    private final String detalhes;
-    private final LocalDateTime data;
+    private String titulo;
+    private String detalhes;
+    private LocalDateTime data;
     private final UUID uuid;
-    private final Boolean concluido;
+    private Boolean concluido;
 
     public TodoItem(String titulo, String detalhes, LocalDateTime data, UUID uuid, Boolean concluido) {
         this.titulo = titulo;
@@ -24,45 +23,40 @@ public final class TodoItem {
         this(titulo, detalhes, data, UUID.randomUUID(), false);
     }
 
-    public String titulo() {
-        return titulo;
-    }
-
-    public String detalhes() {
-        return detalhes;
-    }
-
-    public LocalDateTime data() {
-        return data;
-    }
-
-    public UUID uuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
-    public Boolean concluido() {
+    public Boolean getConcluido() {
         return concluido;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
-        var that = (TodoItem) obj;
-        return Objects.equals(this.titulo, that.titulo) &&
-            Objects.equals(this.detalhes, that.detalhes) &&
-            Objects.equals(this.data, that.data) &&
-            Objects.equals(this.uuid, that.uuid) &&
-            Objects.equals(this.concluido, that.concluido);
+    public void setConcluido(Boolean concluido) {
+        this.concluido = concluido;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(titulo, detalhes, data, uuid, concluido);
+    public LocalDateTime getData() {
+        return data;
+    }
+
+    public void setData(LocalDateTime data) {
+        this.data = data;
+    }
+
+    public String getDetalhes() {
+        return detalhes;
+    }
+
+    public void setDetalhes(String detalhes) {
+        this.detalhes = detalhes;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     @Override
