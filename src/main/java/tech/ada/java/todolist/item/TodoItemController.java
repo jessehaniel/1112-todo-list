@@ -16,74 +16,56 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-import tech.ada.java.todolist.NaoEncontradoException;
-import tech.ada.java.todolist.usuario.UsuarioRepository;
 
 @RestController
 @RequestMapping("/todo-itens")
 @RequiredArgsConstructor
 public class TodoItemController {
 
-    private final TodoItemRepository repository;
-    private final UsuarioRepository usuarioRepository;
+    private final TodoItemService service;
 
     @GetMapping
     public List<TodoItemDto> listar() {
-        return this.repository.findAll().stream()
-            .map(TodoItem::toDto).toList();
+        return this.service.listar();
     }
 
     @GetMapping(value = "consultar", params = "titulo")
     public List<TodoItemDto> consultarPorTitulo(@RequestParam String titulo) {
-        return this.repository.findByTituloContainingIgnoreCase(titulo).stream()
-            .map(TodoItem::toDto).toList();
+        return this.service.consultarPorTitulo(titulo);
     }
 
     @GetMapping("/{uuid}")
     public TodoItemDto buscarPorUuid(@PathVariable UUID uuid) {
-        return this.repository.findByUuid(uuid)
-            .map(TodoItem::toDto)
-            .orElseThrow(NaoEncontradoException::new);
+        return this.service.buscarPorUuid(uuid);
     }
 
     @GetMapping("/usuarios/{username}")
     public List<TodoItemDto> buscarPorUsuario(@PathVariable String username) {
-        return this.repository.findByUsuarioUsername(username).stream()
-            .map(TodoItem::toDto).toList();
+        return this.service.buscarPorUsuario(username);
     }
 
     @PostMapping("/usuarios/{username}")
     @ResponseStatus(HttpStatus.CREATED)
     public TodoItemDto adicionar(@PathVariable String username, @RequestBody TodoItemRequest request) {
-        TodoItem item = TodoItem.fromRequest(request);
-        setUserForItem(username, item);
-        return this.repository.save(item).toDto();
-    }
-
-    private void setUserForItem(String username, TodoItem item) {
-        item.setUsuario(this.usuarioRepository.findByUsername(username)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")));
+        return this.service.adicionar(username, request);
     }
 
     @PutMapping("/{uuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizar(@PathVariable UUID uuid, @RequestBody TodoItemUpdateRequest request) {
-        TodoItem todoItem = this.repository.findByUuid(uuid).orElseThrow(NaoEncontradoException::new);
-        TodoItem itemAtualizado = TodoItem.fromUpdateRequest(request, todoItem.getId(), todoItem.getUsuario());
-        this.repository.save(itemAtualizado).toDto();
+        this.service.atualizar(uuid, request);
     }
 
     @PatchMapping("/{uuid}/concluido")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void marcarComoConcluido(@PathVariable UUID uuid) {
-        this.repository.marcarConcluido(uuid);
+        this.service.marcarConcluido(uuid);
     }
 
     @Transactional
     @DeleteMapping("/{uuid}")
     public void excluir(@PathVariable UUID uuid) {
-        this.repository.deleteByUuid(uuid);
+        this.service.excluir(uuid);
     }
 
 }

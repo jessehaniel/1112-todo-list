@@ -46,34 +46,4 @@ public class TodoItem {
         BAIXA
     }
 
-    public TodoItemDto toDto() {
-        return TodoItemDto.builder()
-            .uuid(this.uuid)
-            .titulo(this.titulo)
-            .detalhes(this.detalhes)
-            .data(this.data)
-            .concluido(this.concluido)
-            .prioridade(this.prioridade)
-            .usuario(this.usuario.toDto())
-            .build();
-    }
-
-    public static TodoItem fromRequest(TodoItemRequest request) {
-        TodoItem todoItem = new TodoItem();
-        todoItem.setTitulo(request.getTitulo());
-        todoItem.setDetalhes(request.getDetalhes());
-        todoItem.setData(request.getData());
-        todoItem.setPrioridade(request.getPrioridade());
-        return todoItem;
-    }
-
-    public static TodoItem fromUpdateRequest(TodoItemUpdateRequest request, Integer id, Usuario usuario) {
-        TodoItem todoItem = TodoItem.fromRequest(request);
-        todoItem.setUuid(request.getUuid());
-        todoItem.setConcluido(request.getConcluido());
-        todoItem.setId(id);
-        todoItem.setUsuario(usuario);
-        return todoItem;
-    }
-
 }

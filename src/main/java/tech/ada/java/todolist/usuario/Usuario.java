@@ -38,14 +38,4 @@ public class Usuario {
         ADMIN, CLIENTE, CONVIDADO
     }
 
-    public UsuarioDto toDto() {
-        return UsuarioDto.builder()
-            .email(this.email)
-            .username(this.username)
-            .password(this.password)
-            .role(this.role)
-            .active(this.active)
-            .build();
-    }
-
 }
