@@ -1,5 +1,8 @@
 package tech.ada.java.todolist.item;
 
+import static tech.ada.java.todolist.item.TodoItem.PrioridadeEnum.MEDIA;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,8 +18,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -36,10 +39,15 @@ public class TodoItem {
     @Enumerated(EnumType.STRING)
     private PrioridadeEnum prioridade;
 
-    enum PrioridadeEnum {
+    public enum PrioridadeEnum {
         ALTA,
         MEDIA,
         BAIXA
+    }
+
+    @JsonCreator
+    public TodoItem(String titulo, String detalhes, LocalDateTime data) {
+        this(null, UUID.randomUUID(), titulo, detalhes, data, false, MEDIA);
     }
 
 }

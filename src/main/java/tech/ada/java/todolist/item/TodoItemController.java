@@ -44,8 +44,8 @@ public class TodoItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void adicionar(@RequestBody TodoItem item) {
-        this.repository.save(item);
+    public TodoItem adicionar(@RequestBody TodoItem item) {
+        return this.repository.save(item);
     }
 
     @PutMapping("/{uuid}")
@@ -57,7 +57,7 @@ public class TodoItemController {
     }
 
 
-    @PatchMapping("/{uuid}/concluir")
+    @PatchMapping("/{uuid}/concluido")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void marcarComoConcluido(@PathVariable UUID uuid) {
         this.repository.marcarConcluido(uuid);
