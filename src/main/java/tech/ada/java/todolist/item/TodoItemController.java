@@ -40,14 +40,6 @@ public class TodoItemController {
         ));
     }
 
-    //1. Criar
-    //2. Listar
-    //3. Consultar
-    //4. Acessar/Detalhar
-    //5. Atualizar
-    //6. Marcar como concluído
-    //7. Excluir
-
     @GetMapping
     public List<TodoItem> listar() {
         return this.todoItemList;
@@ -74,8 +66,9 @@ public class TodoItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void adicionar(@RequestBody TodoItem item) {
+    public TodoItem adicionar(@RequestBody TodoItem item) {
         this.todoItemList.add(item);
+        return item;
     }
 
     @PutMapping("/{uuid}")
@@ -97,7 +90,7 @@ public class TodoItemController {
         return -1;
     }
 
-    @PatchMapping("/{uuid}/concluir")
+    @PatchMapping("/{uuid}/concluido")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void marcarComoConcluido(@PathVariable UUID uuid) {
         TodoItem item = buscarPorUuid(uuid);
