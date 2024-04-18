@@ -19,4 +19,8 @@ public interface TodoItemRepository extends JpaRepository<TodoItem, Integer> {
     @Modifying
     @Query("update TodoItem set concluido = true where uuid = :uuid")
     void marcarConcluido(@Param("uuid") UUID uuid);
+
+    List<TodoItem> findByUsuarioUsername(String username);
+
+    void deleteByUuid(UUID uuid);
 }
