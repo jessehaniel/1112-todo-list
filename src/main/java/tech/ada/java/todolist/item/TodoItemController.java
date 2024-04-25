@@ -3,6 +3,8 @@ package tech.ada.java.todolist.item;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -30,6 +32,12 @@ public class TodoItemController {
     @PreAuthorize("hasRole(T(tech.ada.java.todolist.usuario.Usuario.Role).ADMIN.name())")
     public List<TodoItemDto> listar() {
         return this.service.listar();
+    }
+
+    @GetMapping("/pageable")
+    @PreAuthorize("hasRole(T(tech.ada.java.todolist.usuario.Usuario.Role).ADMIN.name())")
+    public Page<TodoItemDto> listar(Pageable pageable) {
+        return this.service.listar(pageable);
     }
 
     @GetMapping(value = "consultar", params = "titulo")

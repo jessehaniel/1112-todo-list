@@ -6,6 +6,9 @@ import java.util.UUID;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tech.ada.java.todolist.exception.TodoItemNaoEncontradoException;
 import tech.ada.java.todolist.exception.UsuarioNaoEncontradoException;
@@ -24,6 +27,14 @@ public class TodoItemService {
         return this.repository.findAll().stream()
             .map(mapToDto())
             .toList();
+    }
+
+    public Page<TodoItemDto> listar(Pageable pageable) {
+        Page<TodoItem> pageableResult = this.repository.findAll(pageable);
+        List<TodoItemDto> dtoList = pageableResult.stream()
+            .map(mapToDto())
+            .toList();
+        return new PageImpl<>(dtoList, pageable, pageableResult.getTotalElements());
     }
 
     public List<TodoItemDto> consultarPorTitulo(String titulo) {
