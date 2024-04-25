@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import tech.ada.java.todolist.exception.TodoItemNaoEncontradoException;
 import tech.ada.java.todolist.exception.UsuarioNaoEncontradoException;
+import tech.ada.java.todolist.item.TodoItem.PrioridadeEnum;
 import tech.ada.java.todolist.usuario.UsuarioRepository;
 
 @Service
@@ -47,6 +48,15 @@ public class TodoItemService {
             .toList();
     }
 
+    public TodoItemDto adicionar(TodoItemRequest request) {
+        TodoItem todoItem = this.modelMapper.map(request, TodoItem.class);
+        todoItem.setUuid(UUID.randomUUID());
+        todoItem.setConcluido(false);
+        todoItem.setPrioridade(PrioridadeEnum.BAIXA);
+        TodoItem novoTodoItem = this.repository.save(todoItem);
+        return this.modelMapper.map(novoTodoItem, TodoItemDto.class);
+    }
+
     public TodoItemDto adicionar(String username, TodoItemRequest request) {
         TodoItem todoItem = this.modelMapper.map(request, TodoItem.class);
         this.setUserForItem(username, todoItem);
@@ -74,5 +84,11 @@ public class TodoItemService {
     @Transactional
     public void excluir(UUID uuid) {
         this.repository.deleteByUuid(uuid);
+    }
+
+    public TodoItemDto atribuirUsuario(UUID uuid, String username) {
+        TodoItem item = this.repository.findByUuid(uuid).orElseThrow(UsuarioNaoEncontradoException::new);
+        this.setUserForItem(username, item);
+        return this.modelMapper.map(item, TodoItemDto.class);
     }
 }
