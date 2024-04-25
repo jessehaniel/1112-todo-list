@@ -22,6 +22,7 @@ public class WebSecurityConfig {
             .headers(headers -> headers.frameOptions(frame -> frame.disable()))
             .authorizeHttpRequests(auth ->
                 auth.requestMatchers(PathRequest.toH2Console()).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                     .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                     .anyRequest().authenticated()
