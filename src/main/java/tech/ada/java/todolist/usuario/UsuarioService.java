@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tech.ada.java.todolist.exception.UsuarioNaoEncontradoException;
 
@@ -13,6 +14,7 @@ public class UsuarioService {
 
     private final UsuarioRepository repository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public List<UsuarioDto> listarTodos() {
         return this.repository.findAll().stream()
@@ -28,6 +30,7 @@ public class UsuarioService {
 
     public UsuarioDto adicionarUsuario(UsuarioRequest request) {
         Usuario usuario = modelMapper.map(request, Usuario.class);
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         Usuario novoUsuario = repository.save(usuario);
         return modelMapper.map(novoUsuario, UsuarioDto.class);
     }
