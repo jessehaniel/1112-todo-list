@@ -36,8 +36,8 @@ public class Application {
                         new SecurityScheme()
                             .name(securitySchemeName)
                             .type(SecurityScheme.Type.HTTP)
-                            .scheme("basic")
-//                            .bearerFormat("JWT")
+                            .scheme("bearer")
+                            .bearerFormat("JWT")
                     )
             )
             .info(new Info().title(apiTitle).version("0.0.1-SNAPSHOT"));
