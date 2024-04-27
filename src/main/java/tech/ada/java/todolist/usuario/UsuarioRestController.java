@@ -1,5 +1,6 @@
 package tech.ada.java.todolist.usuario;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class UsuarioRestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UsuarioDto adicionarUsuario(@RequestBody UsuarioRequest usuario) {
+    public UsuarioDto adicionarUsuario(@Valid @RequestBody UsuarioRequest usuario) {
         return this.service.adicionarUsuario(usuario);
     }
 
