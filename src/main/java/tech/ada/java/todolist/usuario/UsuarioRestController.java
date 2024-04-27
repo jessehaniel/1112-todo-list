@@ -1,7 +1,8 @@
 package tech.ada.java.todolist.usuario;
 
+import static tech.ada.java.todolist.security.PermissionValitation.validatePermission;
+
 import jakarta.validation.Valid;
-import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,9 +32,8 @@ public class UsuarioRestController {
     }
 
     @GetMapping("/{username}")
-    @PreAuthorize("hasAnyRole(T(tech.ada.java.todolist.usuario.Usuario.Role).CLIENTE.name(),T(tech.ada.java.todolist.usuario.Usuario.Role).ADMIN.name())")
-    public UsuarioDto buscarPorUsername(@PathVariable String username, Principal principal) {
-        if (!principal.getName().equals(username)) {
+    public UsuarioDto buscarPorUsername(@PathVariable String username, Authentication authentication) {
+        if (validatePermission.apply(authentication, username)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado");
         }
         return this.service.buscarPorUsername(username);
@@ -46,9 +46,8 @@ public class UsuarioRestController {
     }
 
     @DeleteMapping("/{username}")
-    @PreAuthorize("hasAnyRole(T(tech.ada.java.todolist.usuario.Usuario.Role).CLIENTE.name(),T(tech.ada.java.todolist.usuario.Usuario.Role).ADMIN.name())")
     public void excluir(@PathVariable String username, Authentication authentication) {
-        if (!authentication.getName().equals(username)) {
+        if (validatePermission.apply(authentication, username)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado");
         }
         this.service.excluir(username);
