@@ -76,6 +76,13 @@ public class RestControllerAdvice extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> accessDeniedExceptionHandler(Exception ex) {
+        final ErrorResponse errorResponse =
+            new ErrorResponse(ex.getClass(), HttpStatus.FORBIDDEN, ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> defaultExceptionHandler(Exception ex) {
         final ErrorResponse errorResponse =

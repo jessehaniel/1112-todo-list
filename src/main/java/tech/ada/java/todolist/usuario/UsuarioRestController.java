@@ -1,5 +1,6 @@
 package tech.ada.java.todolist.usuario;
 
+import jakarta.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class UsuarioRestController {
     }
 
     @GetMapping("/{username}")
-    @PreAuthorize("hasRole(T(tech.ada.java.todolist.usuario.Usuario.Role).CLIENTE.name())")
+    @PreAuthorize("hasAnyRole(T(tech.ada.java.todolist.usuario.Usuario.Role).CLIENTE.name(),T(tech.ada.java.todolist.usuario.Usuario.Role).ADMIN.name())")
     public UsuarioDto buscarPorUsername(@PathVariable String username, Principal principal) {
         if (!principal.getName().equals(username)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado");
@@ -40,12 +41,12 @@ public class UsuarioRestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UsuarioDto adicionarUsuario(@RequestBody UsuarioRequest usuario) {
+    public UsuarioDto adicionarUsuario(@Valid @RequestBody UsuarioRequest usuario) {
         return this.service.adicionarUsuario(usuario);
     }
 
     @DeleteMapping("/{username}")
-    @PreAuthorize("hasRole(T(tech.ada.java.todolist.usuario.Usuario.Role).CLIENTE.name())")
+    @PreAuthorize("hasAnyRole(T(tech.ada.java.todolist.usuario.Usuario.Role).CLIENTE.name(),T(tech.ada.java.todolist.usuario.Usuario.Role).ADMIN.name())")
     public void excluir(@PathVariable String username, Authentication authentication) {
         if (!authentication.getName().equals(username)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado");
