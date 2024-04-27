@@ -1,5 +1,7 @@
 package tech.ada.java.todolist.item;
 
+import static tech.ada.java.todolist.security.PermissionValitation.validatePermission;
+
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -51,9 +53,8 @@ public class TodoItemController {
     }
 
     @GetMapping("/usuarios/{username}")
-    @PreAuthorize("hasRole(T(tech.ada.java.todolist.usuario.Usuario.Role).CLIENTE.name())")
     public List<TodoItemDto> buscarPorUsuario(@PathVariable String username, Authentication authentication) {
-        if (!authentication.getName().equals(username)) {
+        if (validatePermission.apply(authentication, username)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado");
         }
         return this.service.buscarPorUsuario(username);
@@ -61,9 +62,8 @@ public class TodoItemController {
 
     @PostMapping("/usuarios/{username}")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole(T(tech.ada.java.todolist.usuario.Usuario.Role).CLIENTE.name())")
     public TodoItemDto adicionar(@PathVariable String username, @RequestBody TodoItemRequest request, Authentication authentication) {
-        if (!authentication.getName().equals(username)) {
+        if (validatePermission.apply(authentication, username)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso negado");
         }
         return this.service.adicionar(username, request);
@@ -77,8 +77,7 @@ public class TodoItemController {
 
     @PatchMapping("/{uuid}/concluido")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole(T(tech.ada.java.todolist.usuario.Usuario.Role).CLIENTE.name())")
-    public void marcarComoConcluido(@PathVariable UUID uuid, Authentication authentication) {
+    public void marcarComoConcluido(@PathVariable UUID uuid) {
         this.service.marcarConcluido(uuid);
     }
 
